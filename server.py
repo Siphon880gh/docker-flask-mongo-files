@@ -67,11 +67,21 @@ def dbRead():
 
     return json_data, 200
 
-
-# http://127.0.0.1:5001/files/read
-@app.route("/files/read", methods=["POST"])
-def readFile():
-    return jsonify({}), 200
+# Example request http://127.0.0.1:5001/files/read/foo.txt
+@app.route("/files/read/<filename>", methods=["GET"])
+def readFile2(filename):
+    testInstructions = "This is to test whether the server can read a file from a folder that has been virtually mounted if running in Docker. If it can read, then it can write."
+    if(filename):
+        try:
+            with open(f"./files/{filename}") as my_file:
+                contents = my_file.read()
+                return jsonify({"testInstructions": testInstructions, "filename":filename, "contents": contents}), 200
+        except FileNotFoundError:
+            return jsonify({"testInstructions": testInstructions, "error":"File not found"}), 200
+        except IOError:
+            return jsonify({"testInstructions": testInstructions, "error":"An error occurred while reading the file."}), 200
+    else:
+        return jsonify({"message": "No filename provided."}), 400
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
