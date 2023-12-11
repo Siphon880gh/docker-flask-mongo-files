@@ -1,4 +1,4 @@
-Foobar
+FOOBAR
 has
 a
 door
