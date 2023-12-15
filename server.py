@@ -17,10 +17,10 @@ def is_running_in_docker():
 
 
 # MongoDB connection
-# client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://localhost:27017/")
 # client = MongoClient(f"mongodb://host.docker.internal/")
-mongo_host = "host.docker.internal" if os.path.exists('/.dockerenv') else "localhost"
-client = MongoClient(f"mongodb://{mongo_host}:27017/")
+# mongo_host = "host.docker.internal" if os.path.exists('/.dockerenv') else "localhost"
+# client = MongoClient(f"mongodb://{mongo_host}:27017/")
 db = client["docker-python-mongo"]
 
 
