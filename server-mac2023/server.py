@@ -2,11 +2,20 @@ from flask import Flask, request, jsonify
 from flask_cors import cross_origin
 from pymongo import MongoClient
 from flask_cors import CORS
-import datetime
+import datetime # included with python
+
+# Get the path to the currently active Python interpreter to see if it's from the pyenv virtual environment's path
+import sys # included with python
+print(sys.executable) # Print's python interpreter path. Expect to be virtual environment's 
+
+# Get the module import paths and it should have the pipenv virtual environment's path including the current app's path
+# Print the paths where Python is importing modules from
+for path in sys.path:
+    print(path)
 
 # For ObjectId to work
-from bson import ObjectId
-import json
+from bson import ObjectId # included with pymongo
+import json # included with python
 
 app = Flask(__name__)
 CORS(app)
@@ -17,12 +26,10 @@ def is_running_in_docker():
 
 
 # MongoDB connection
-# client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://localhost:27017/")
 # client = MongoClient(f"mongodb://host.docker.internal/")
 # mongo_host = "host.docker.internal" if os.path.exists('/.dockerenv') else "localhost"
 # client = MongoClient(f"mongodb://{mongo_host}:27017/")
-mongo_host = "127.0.0.1"
-client = MongoClient("mongodb://{}:27017/".format(mongo_host))
 db = client["docker-python-mongo"]
 
 
@@ -36,7 +43,8 @@ class JSONEncoder(json.JSONEncoder):
 # http://127.0.0.1:5001/
 @app.route("/", methods=["GET"])
 def front():
-    return jsonify({"message": "Success! This is to test a Docker alternative. This is Supervisor with pyenv for specific python interpreter and pipenv for specific python packages in a Flask application."}), 200
+    # Get the directory of the imported module
+    return jsonify({"message": "This is to test a Dockerized Flask + MongoDB server that's been Gunicorned, and whether it can still have access to a folder that has been virtually mounted. Just to easily test all routes, I have them as GET."}), 200
 
 # http://127.0.0.1:5001/db/seed
 @app.route("/db/seed", methods=["GET"])
@@ -83,7 +91,7 @@ def readFile2(filename):
     testInstructions = "This is to test whether the server can read a file from a folder that has been virtually mounted if running in Docker. If it can read, then it can write."
     if(filename):
         try:
-            with open("./files/" + filename) as my_file:
+            with open(f"./files/{filename}") as my_file:
                 contents = my_file.read()
                 return jsonify({"testInstructions": testInstructions, "filename":filename, "contents": contents}), 200
         except FileNotFoundError:

@@ -36,7 +36,7 @@ class JSONEncoder(json.JSONEncoder):
 # http://127.0.0.1:5001/
 @app.route("/", methods=["GET"])
 def front():
-    return jsonify({"message": "Success! This is to test a Docker alternative. This is Supervisor with pyenv for specific python interpreter and pipenv for specific python packages in a Flask application."}), 200
+    return jsonify({"message": "This is to test a Dockerized Flask + MongoDB server that's been Gunicorned, and whether it can still have access to a folder that has been virtually mounted. Just to easily test all routes, I have them as GET."}), 200
 
 # http://127.0.0.1:5001/db/seed
 @app.route("/db/seed", methods=["GET"])
